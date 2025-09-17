@@ -1,18 +1,19 @@
-FROM golang:1.21-alpine as go
-ENV GOOS=linux
-ENV CGO_ENABLED=0
-ADD server /usr/src/app
-WORKDIR /usr/src/app
-RUN go build -a -installsuffix cgo
+FROM --platform=$BUILDPLATFORM golang:1.21-alpine AS go
+ARG TARGETOS TARGETARCH
+ENV CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH
 
-FROM node:12.11-buster as node
-ADD . /home/node/app
+WORKDIR /usr/src/app
+COPY server/ .
+RUN go build -trimpath -ldflags="-s -w" -o /out/ace_away ./...
+
+FROM --platform=$BUILDPLATFORM node:12-buster as node
 WORKDIR /home/node/app
+COPY . .
 RUN npm install && npm run lint && npm run build
 
-FROM alpine:3.9
+FROM alpine:latest
 
-COPY --from=go /usr/src/app/ace_away /
+COPY --from=go /out/ace_away /
 COPY --from=node /home/node/app/dist /dist
 
 CMD ["/ace_away", "-path", "/dist"]
