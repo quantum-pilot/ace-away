@@ -1,4 +1,4 @@
-FROM --platform=$TARGETPLATFORM golang:1.21-alpine AS go
+FROM golang:1.21-alpine AS go
 ARG TARGETOS TARGETARCH
 ENV CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH
 
@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 COPY server/ .
 RUN go build -trimpath -ldflags="-s -w" -o /out/ace_away ./...
 
-FROM --platform=$TARGETPLATFORM node:12-buster as node
+FROM node:12-buster as node
 WORKDIR /home/node/app
 COPY . .
 RUN npm install && npm run lint && npm run build
