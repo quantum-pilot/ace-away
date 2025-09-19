@@ -2,7 +2,7 @@
 
 "Ace" is a card game that I play with my friends every now and then. It's somewhat popular in India, but there are [very few references](https://boardgames.stackexchange.com/q/7902/) addressing this game. This is a hobby project which implements that game as a web app using Go and Vue.
 
-[Live demo](https://waffles.space/ace-away).
+[Live demo](https://ace.waffles.space).
 
 ### Usage
 
